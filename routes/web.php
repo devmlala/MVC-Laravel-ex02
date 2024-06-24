@@ -25,8 +25,6 @@ Route::post('/livros',[LivroController::class,'store']);
 
 
 
-
-
 Route::get('/sistemas', function () {
     echo "sistemas FFLCH";
         return view('sistemas');

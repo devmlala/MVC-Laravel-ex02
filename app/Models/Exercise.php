@@ -13,7 +13,7 @@ class Exercise extends Model
         'diet',
         'pulse',
         'kind',
-        'time'
+        'time',
     ];
 
 }
