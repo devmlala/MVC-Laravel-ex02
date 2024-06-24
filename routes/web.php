@@ -19,6 +19,11 @@ Route::post('/livros',[LivroController::class,'store']);
 
 
 
+//exercicio 1
+Route::get('/stats',[ExerciseController::class,'stats']);
+Route::get('/importarCSV', [ExerciseController::class, 'importarCSV']);
+
+
 
 
 

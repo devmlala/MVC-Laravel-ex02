@@ -17,6 +17,32 @@ class ExerciseController extends Controller
         return view('exercises.index', compact('exercises'));
     }
 
+
+    //exercicio 1: stats()
+    /*
+    public function stats()
+    {
+
+    }
+    */
+
+    //exercicio 1: importarCSV
+    public function importarCSV()
+    {
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Show the form for creating a new resource.
      */
