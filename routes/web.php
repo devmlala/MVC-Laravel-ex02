@@ -19,9 +19,34 @@ Route::post('/livros',[LivroController::class,'store']);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //exercicio 1
-Route::get('/stats',[ExerciseController::class,'stats']);
-Route::get('/importarCSV', [ExerciseController::class, 'importarCSV']);
+
+Route::get('/stats', [ExerciseController::class, 'statist'])->name('exercises.stats');
+
+Route::get('/importarCSV', [ExerciseController::class, 'importarCSVForm'])->name('exercises.importForm');
+Route::post('/importarCSV', [ExerciseController::class, 'importarCSV'])->name('exercises.import');
+
+
+Route::get('/mediaPulse', [ExerciseController::class, 'mediaPulse'])->name('exercises.mediaPulse');
+
+
+
+
+
 
 
 
@@ -47,7 +72,6 @@ Route::get('/exercises/export-csv', [ExerciseController::class, 'exportCsv'])->n
 
 Route::get('/gerarCSV', [ExerciseController::class, 'gerarCSV'])->name('gerarCSV.csv');
 
-
 Route::get('/stats', [ExerciseController::class, 'stats'])->name('stats.csv');
 
  /*   
@@ -55,10 +79,6 @@ Route::get('/livros', function () {
     echo "sistemas FFLCH";
         return view('livros');
     });    
-
-
-
-
 
 Route::get('/livros', [LivroFulanoController::class, 'index'])->name('livros.index');
 */

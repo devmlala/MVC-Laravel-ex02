@@ -19,18 +19,56 @@ class ExerciseController extends Controller
 
 
     //exercicio 1: stats()
-    /*
-    public function stats()
-    {
-
-    }
-    */
-
-    //exercicio 1: importarCSV
-    public function importarCSV()
+    public function statist()
     {
         
     }
+
+
+    //exercicio 1: importarCSV
+    public function importarCSVForm()
+    {
+        return view('exercises.importcsv');
+    }
+
+    public function importarCSV(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:csv,txt',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        }
+
+        $file = $request->file('file');
+        $path = $file->getRealPath();
+        $data = array_map('str_getcsv', file($path));
+
+        $header = $data[0];
+        unset($data[0]);
+
+        foreach ($data as $row) {
+            $exerciseData = array_combine($header, $row);
+            Exercise::create($exerciseData);
+        }
+
+        return redirect()->route('exercises.importForm')->with('success', 'CSV importado com sucesso.');
+    }
+
+
+
+    //media pulse
+    public function mediaPulse()
+    {
+        $mediaRest = Exercise::where('kind', 'rest')->avg('pulse');
+        $mediaWalking = Exercise::where('kind', 'walking')->avg('pulse');
+        $mediaRunning = Exercise::where('kind', 'running')->avg('pulse');
+
+        return view('exercises.media', compact('mediaRest', 'mediaWalking', 'mediaRunning'));
+    }
+
+
 
 
 

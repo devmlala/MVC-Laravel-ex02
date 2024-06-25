@@ -22,9 +22,9 @@ return new class extends Migration
 
             $table->string('diet');
             $table->integer('pulse');
-            $table->string('kind');
             $table->string('time');
-
+            $table->string('kind');
+            
         });
     }
 
