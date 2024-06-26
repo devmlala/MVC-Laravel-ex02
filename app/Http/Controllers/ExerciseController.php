@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Exercise;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use League\Csv\Reader;
 
 class ExerciseController extends Controller
 {
@@ -17,48 +19,106 @@ class ExerciseController extends Controller
         return view('exercises.index', compact('exercises'));
     }
 
-
-    //exercicio 1: stats()
-    public function statist()
-    {
-        
-    }
-
-
-    //exercicio 1: importarCSV
+    /**
+     * Show the form for importing CSV.
+     */
     public function importarCSVForm()
     {
         return view('exercises.importcsv');
     }
 
+    /**
+     * Process the imported CSV file and calculate the average pulse.
+     */
+    public function importCSV(Request $request)
+    {
+        // Validar se o arquivo foi enviado corretamente
+        $request->validate([
+            'csv_file' => 'required|mimes:csv,txt|max:2048' // máximo de 2MB
+        ]);
+
+        // Obter o arquivo enviado
+        $file = $request->file('csv_file');
+
+        // Ler o arquivo CSV
+        $reader = Reader::createFromPath($file->getPathname(), 'r');
+        $reader->setHeaderOffset(0); // pular a primeira linha (cabeçalho)
+
+        $records = $reader->getRecords();
+
+        $totalPulse = 0;
+        $count = 0;
+
+        foreach ($records as $record) {
+            // Calcular a média do campo 'pulse'
+            $totalPulse += (int) $record['pulse'];
+            $count++;
+        }
+
+        // Calcular a média
+        $mediaPulse = ($count > 0) ? $totalPulse / $count : 0;
+
+        // Retornar para a view com a média calculada
+        return view('exercises.result', ['mediaPulse' => $mediaPulse]);
+    }
+
+    /**
+     * Process the imported CSV file and store the data in the database.
+     */
+
+
+    
     public function importarCSV(Request $request)
     {
+        // Verificar se o arquivo foi enviado corretamente
+        if (!$request->hasFile('file') || !$request->file('file')->isValid()) {
+            return redirect()->back()->withErrors(['error' => 'O arquivo enviado não é válido.']);
+        }
+
+        // Validar o arquivo CSV
         $validator = Validator::make($request->all(), [
-            'file' => 'required|mimes:csv,txt',
+            'file' => 'required|mimes:csv,txt|max:2048', // máximo de 2MB
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator);
         }
 
+        // Processar o arquivo CSV
         $file = $request->file('file');
         $path = $file->getRealPath();
         $data = array_map('str_getcsv', file($path));
 
+        // Obtendo o cabeçalho do CSV
         $header = $data[0];
-        unset($data[0]);
+        unset($data[0]); // Remove o cabeçalho do array de dados
 
+        // Iterando sobre os dados e criando registros no banco de dados
         foreach ($data as $row) {
+            // Combinando o cabeçalho com os dados de cada linha
             $exerciseData = array_combine($header, $row);
-            Exercise::create($exerciseData);
+
+            // Criando um novo registro de Exercise no banco de dados
+            Exercise::create([
+                'diet' => $exerciseData['diet'],
+                'pulse' => $exerciseData['pulse'],
+                'kind' => $exerciseData['kind'],
+                'time' => $exerciseData['time'],
+            ]);
         }
 
-        return redirect()->route('exercises.importForm')->with('success', 'CSV importado com sucesso.');
+        return redirect()->route('exercises.importarCSVForm')->with('success', 'CSV importado com sucesso.');
     }
 
 
 
-    //media pulse
+
+
+
+
+    /**
+     * Calculate average pulse values for different kinds of exercises.
+     */
     public function mediaPulse()
     {
         $mediaRest = Exercise::where('kind', 'rest')->avg('pulse');
@@ -67,19 +127,6 @@ class ExerciseController extends Controller
 
         return view('exercises.media', compact('mediaRest', 'mediaWalking', 'mediaRunning'));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -149,8 +196,24 @@ class ExerciseController extends Controller
         return redirect()->route('exercises.index')->with('success', 'Exercise deleted successfully.');
     }
 
+
     /**
-     * Export data to CSV.
+     * Remover todos os registros.
+     */
+
+    public function destroyAll()
+    {
+        Exercise::truncate(); // Remove all records from the table
+    
+        return redirect()->route('exercises.index')->with('success', 'All exercises deleted successfully.');
+    }
+    
+    
+
+
+
+    /**
+     * Export all exercises data to CSV file.
      */
     public function gerarCSV()
     {
@@ -179,15 +242,12 @@ class ExerciseController extends Controller
     }
 
     /**
-     * Export stats to CSV.
+     * Export statistics (count of each kind) to CSV file.
      */
     public function stats()
     {
         // Calculate the count of values in the 'kind' column
         $counts = Exercise::groupBy('kind')->select('kind', DB::raw('count(*) as total'))->get();
-
-        // Fetch all exercise records
-        $registros = Exercise::all();
 
         // CSV headers
         $headers = array(
@@ -198,7 +258,7 @@ class ExerciseController extends Controller
             "Expires" => "0"
         );
 
-        $callback = function() use ($registros, $counts) {
+        $callback = function() use ($counts) {
             $file = fopen('php://output', 'w');
 
             // Write CSV headers
@@ -216,12 +276,6 @@ class ExerciseController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 }
-
-
-
-
-
-
 
 
 

@@ -19,40 +19,64 @@ Route::post('/livros',[LivroController::class,'store']);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //exercicio 1
 
 Route::get('/stats', [ExerciseController::class, 'statist'])->name('exercises.stats');
 
-Route::get('/importarCSV', [ExerciseController::class, 'importarCSVForm'])->name('exercises.importForm');
-Route::post('/importarCSV', [ExerciseController::class, 'importarCSV'])->name('exercises.import');
+Route::get('/exercises/importarCSV', [ExerciseController::class, 'importarCSVForm'])->name('exercises.importarCSVForm');
+Route::post('/exercises/importarCSV', [ExerciseController::class, 'importarCSV'])->name('exercises.import');
 
+//FIM Exercicio 1
 
-Route::get('/mediaPulse', [ExerciseController::class, 'mediaPulse'])->name('exercises.mediaPulse');
-
-
-
-
-
+//deletar registros
+Route::delete('/exercises/destroyAll', [ExerciseController::class, 'destroyAll'])->name('exercises.destroyAll');
 
 
 
+Route::get('/media', [ExerciseController::class, 'mediaPulse'])->name('exercises.media');
 
 
 
+
+
+//
+
+Route::get('/exercises', [ExerciseController::class, 'index'])->name('exercises.index');
+Route::get('/exercises/create', [ExerciseController::class, 'create'])->name('exercises.create');
+Route::post('/exercises', [ExerciseController::class, 'store'])->name('exercises.store');
+Route::get('/exercises/{exercise}', [ExerciseController::class, 'show'])->name('exercises.show');
+Route::get('/exercises/{exercise}/edit', [ExerciseController::class, 'edit'])->name('exercises.edit');
+Route::put('/exercises/{exercise}', [ExerciseController::class, 'update'])->name('exercises.update');
+Route::delete('/exercises/{exercise}', [ExerciseController::class, 'destroy'])->name('exercises.destroy');
+
+
+
+
+
+Route::get('/exercises/result', [ExerciseController::class, 'importarCSV'])->name('exercises.result');
+
+
+
+
+
+
+
+/*
+Route::get('/exercises/import', [ExerciseController::class, 'importarCSVForm'])->name('exercises.importarCSVForm');
+Route::post('/exercises/import', [ExerciseController::class, 'importarCSV'])->name('exercises.importarCSV');
+*/
+
+
+Route::get('/exercises/media', [ExerciseController::class, 'mediaPulse'])->name('exercises.mediaPulse');
+//Route::get('/exercises/stats', [ExerciseController::class, 'stats'])->name('exercises.statsCSV');
+Route::get('/exercises/export', [ExerciseController::class, 'gerarCSV'])->name('exercises.gerarCSV');
+
+
+
+
+
+
+/*
 
 
 Route::get('/sistemas', function () {
@@ -82,7 +106,7 @@ Route::get('/livros', function () {
 
 Route::get('/livros', [LivroFulanoController::class, 'index'])->name('livros.index');
 */
-
+/*
 
 Route::get('/gerar-csv', [LivroFulanoController::class, 'gerarCSV'])->name('gerar-csv.csv');
 
@@ -97,7 +121,7 @@ Route::get('/livrofulano', [LivroFulanoController::class, 'index'])->name('livro
 Route::get('/livrofulano/create', [LivroFulanoController::class, 'create'])->name('livrofulano.create');
 Route::post('/livrofulano/store', [LivroFulanoController::class, 'store'])->name('livrofulano.store');
 
-
+*/
 
 
 

@@ -14,7 +14,6 @@ class Exercise extends Model
         'pulse',
         'kind',
         'time',
-        'kind'
     ];
 
 }

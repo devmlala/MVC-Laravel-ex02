@@ -9,8 +9,17 @@
         <h1>Exercises</h1>
         <div class="d-flex justify-content-between mb-3">
             <a href="{{ route('exercises.create') }}" class="btn btn-primary">Add Exercise</a>
-            <a href="{{ route('gerarCSV.csv') }}" class="btn btn-secondary">Download CSV</a>
-            <a href="{{ route('stats.csv') }}" class="btn btn-secondary">Stats CSV</a>
+            <a href="{{ route('exercises.gerarCSV') }}" class="btn btn-secondary">Download CSV</a>
+            <a href="{{ route('exercises.media') }}" class="btn btn-secondary">Stats CSV</a>
+
+            <form action="{{ route('exercises.destroyAll') }}" method="POST" style="display:inline-block;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete all exercises?')">Delete All Exercises</button>
+            </form>
+
+            <a href="{{ route('exercises.importarCSVForm') }}">Importar CSV</a>
+
 
         </div>
         <table class="table table-striped mt-3">
@@ -46,6 +55,7 @@
             </tbody>
         </table>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
