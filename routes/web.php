@@ -8,10 +8,7 @@ use App\Http\Controllers\LivroFulanoController;
 
 
 
-
-
-
-
+//Route::get('/livros',[LivroController::class,'create']);
 Route::get('/livros/create',[LivroController::class,'create']);
 Route::post('/livros',[LivroController::class,'store']);
 
@@ -25,17 +22,14 @@ Route::get('/stats', [ExerciseController::class, 'statist'])->name('exercises.st
 
 Route::get('/exercises/importarCSV', [ExerciseController::class, 'importarCSVForm'])->name('exercises.importarCSVForm');
 Route::post('/exercises/importarCSV', [ExerciseController::class, 'importarCSV'])->name('exercises.import');
+    //deletar registros
+Route::delete('/exercises/destroyAll', [ExerciseController::class, 'destroyAll'])->name('exercises.destroyAll');
 
 //FIM Exercicio 1
-
-//deletar registros
-Route::delete('/exercises/destroyAll', [ExerciseController::class, 'destroyAll'])->name('exercises.destroyAll');
 
 
 
 Route::get('/media', [ExerciseController::class, 'mediaPulse'])->name('exercises.media');
-
-
 
 
 

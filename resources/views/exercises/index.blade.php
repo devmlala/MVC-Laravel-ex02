@@ -19,8 +19,6 @@
             </form>
 
             <a href="{{ route('exercises.importarCSVForm') }}">Importar CSV</a>
-
-
         </div>
         <table class="table table-striped mt-3">
             <thead>
